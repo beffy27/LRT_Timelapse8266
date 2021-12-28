@@ -5,9 +5,10 @@
 #include <ArduinoOTA.h>
 #include"MyOLED.h"
 #include <EEPROM.h>
-#include "eepromData.h"
 #include "main.h"
-#include "StateMachine.h"
+
+
+
 
 #define cfgStart 0
 #define CamOutput D3
@@ -17,119 +18,14 @@
 
 
 
-typedef void (*Menu)(void);
-typedef void (*Funktionen)(void);
 
-Menu menus[][5] = {
-{dM_TimelapseM, dM_DelayTime, dM_Intervall, dM_NoOfShots },
-{dM_TLBulbAstro, dM_DelayTime, dM_Intervall, dM_NoOfShots},
-{dM_SingleExposure, dM_DelayTime, dM_Exposure, dM_DelayCountDown,dm_Start},
-{dM_Setup, dM_DelayTime, dM_Intervall, dM_NoOfShots}
-};
 
-const int analogInPin = A0;  // ESP8266 Analog Pin ADC0 = A0
-int sensorValue = 0;  // value read from the pot
-bool startFlag = false;
-uint16_t MenuCounter = 0;
-uint8_t ActionCounter = 0;
-uint8_t skip =0;
-bool enableMenuCounter = true;
-uint8_t Lvl=0;
-uint8_t previousState=0;
-uint8_t confirm=0;
-bool loadMenuCounter=0;
-bool nextState=false;
-bool shootFlag = false;
-long shoottimepoint =0;
-int choosed_Menu = 0;
-enum choosenMenu {e_TimelapseM=0,e_TLBulbAstro=20,e_SingleExposure=40,e_Setup=60};
-enum MenuStructure {
-  mainMenu=0,mainMenuconfirm=1,
-  //IntervallMenu
-  mI_delayTime_s=2, mI_delayTime_m=3, mI_delayTime_h=4, mI_interval=5,mI_noofShot=6,mI_confirm=7,mI_running =8,
-  //SingleExposure
-  mSE_delayTime_s=10, mSE_delayTime_m=11, mSE_delayTime_h=12,mSE_exposure=13, mSe_countdown=14,mSE_running =15,
-  //TLBulbAstro
-  mIA_delayTime_s=20, mIA_delayTime_m=21, mIA_delayTime_h=22,mIA_interval=23,mIA_noofShot=24, mIA_confirm=25,mIA_running=26,
-  //Setup
-  mS_Setup=30,//Reserviert bis 49
-  mS_flashlight=66, mS_Memory=67,
-  //Running
-  mR_fullInfo =50, mR_minInfo =51,mR_oneDot=52,
-  //Abgebrochen
-  m_Abgebrochen=255
-  
-  };
 
-uint8_t MenuLen = (sizeof(menus[0]) / sizeof(Menu));
-unsigned long previousMillis = 0;
-
-String SetupMenuItems[]={"Fotosize","ReleaseTime","AutofocusTime","DelayFlag","DelayTimeStd","Displayflipped","Save Settings","Back"};
-int sizeofSetup = (sizeof(SetupMenuItems)/sizeof(String));
 /////////////////////////////////////////State Machine
 
 
-void MenuM(){
-  switch(MenuCounter%4){
-            case 0 :// dM_TimelapseM
-              dM_TimelapseM();
-              break;
-            case 1 :        
-              dM_TLBulbAstro();
-              break;
-            case 2 :        
-              dM_SingleExposure();
-              break;
-            case 3 :        
-              dM_Setup();
-              break;
-            }
-}
-
-void SetupMenu(){
-  dM_SetupMenu();
-}
-
-bool trans_Menu_Setup(){
-  if(MenuCounter==3 && nextState){
-    nextState=false;
-    return true;
-  }
-  return false;
-}
-
-bool trans_Setup_Menu(){
-  if(MenuCounter==7 && nextState){
-    nextState=false;
-    return true;
-  }else{
-  return false;
-  }
-}
-
-StateMachine machine = StateMachine();
-State* S_Menu = machine.addState(&MenuM);
-State* S_SetupMenu = machine.addState(&SetupMenu);
 
 
-///////////////////////////////////////////////
-// Settings for Timelapse,Delay,etc
-uint8_t delay_h=0;
-uint8_t delay_m=0;
-uint8_t delay_s=0;
-float interval=10;
-unsigned long shots=20;
-unsigned long shotCount=0;
-
-uint8_t mem_delay_h=0;
-uint8_t mem_delay_m=0;
-uint8_t mem_delay_s=0;
-float mem_interval=1;
-uint16_t mem_shots=0;
-uint16_t releasetime =200;
-
-configData_t cfg;
-/////////////////////////////////////////////////////////////////
 
 void setup() {
   EEPROM.begin(4096);
@@ -157,8 +53,8 @@ void setup() {
   //eepromTest();
   loadConfig();
   shootFlag =false;
-  S_Menu->addTransition(&trans_Menu_Setup,S_SetupMenu);
-  S_SetupMenu->addTransition(&trans_Setup_Menu,S_Menu);
+  defineTransitions();
+
 }
 
 void DevelopmentInfo(){
@@ -232,7 +128,7 @@ if (seconds>=60){
 }
 }
 
-
+/*
 void delay_disabled(){
   if(cfg.delayFlag==false){
     if(Lvl==mI_delayTime_h or Lvl==mSE_delayTime_h or Lvl==mIA_delayTime_h){
@@ -242,6 +138,8 @@ void delay_disabled(){
   }
 }
 }
+*/
+/*
 void menuControl2(){
     switch(Lvl){
       case mainMenu:    
@@ -342,6 +240,7 @@ void menuControl2(){
         break;
   }
 }
+*/
 
 void cameraTrigger(){
   
@@ -416,7 +315,8 @@ enableMenuCounter =true;
   
  }else{
     //menuControl2();
-    machine.run();
+    //machine.run();
+    runMenuStatemachine();
  }
 
   DevelopmentInfo(); // wird ausgeschaltet

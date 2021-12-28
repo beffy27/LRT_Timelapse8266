@@ -1,3 +1,6 @@
+#ifndef MYOLED_H
+#define MYOLED_H
+
 #include <Wire.h>               // Only needed for Arduino 1.6.5 and earlier
 #include "SSD1306Wire.h"        // legacy: #include "SSD1306.h"
 
@@ -31,3 +34,5 @@ String SeperateTimehms( unsigned long seconds);
 void releaseCamera();
 void dM_Abgebrochen();
 void dM_SetupMenu();
+
+#endif 
