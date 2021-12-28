@@ -38,6 +38,7 @@ uint8_t Lvl=0;
 uint8_t previousState=0;
 uint8_t confirm=0;
 bool loadMenuCounter=0;
+bool nextState=false;
 bool shootFlag = false;
 long shoottimepoint =0;
 int choosed_Menu = 0;
@@ -65,6 +66,51 @@ unsigned long previousMillis = 0;
 
 String SetupMenuItems[]={"Fotosize","ReleaseTime","AutofocusTime","DelayFlag","DelayTimeStd","Displayflipped","Save Settings","Back"};
 int sizeofSetup = (sizeof(SetupMenuItems)/sizeof(String));
+/////////////////////////////////////////State Machine
+
+
+void MenuM(){
+  switch(MenuCounter%4){
+            case 0 :// dM_TimelapseM
+              dM_TimelapseM();
+              break;
+            case 1 :        
+              dM_TLBulbAstro();
+              break;
+            case 2 :        
+              dM_SingleExposure();
+              break;
+            case 3 :        
+              dM_Setup();
+              break;
+            }
+}
+
+void SetupMenu(){
+  dM_SetupMenu();
+}
+
+bool trans_Menu_Setup(){
+  if(MenuCounter==3 && nextState){
+    nextState=false;
+    return true;
+  }
+  return false;
+}
+
+bool trans_Setup_Menu(){
+  if(MenuCounter==7 && nextState){
+    nextState=false;
+    return true;
+  }else{
+  return false;
+  }
+}
+
+StateMachine machine = StateMachine();
+State* S_Menu = machine.addState(&MenuM);
+State* S_SetupMenu = machine.addState(&SetupMenu);
+
 
 ///////////////////////////////////////////////
 // Settings for Timelapse,Delay,etc
@@ -111,6 +157,8 @@ void setup() {
   //eepromTest();
   loadConfig();
   shootFlag =false;
+  S_Menu->addTransition(&trans_Menu_Setup,S_SetupMenu);
+  S_SetupMenu->addTransition(&trans_Setup_Menu,S_Menu);
 }
 
 void DevelopmentInfo(){
@@ -367,7 +415,8 @@ enableMenuCounter =true;
   runningMenu();
   
  }else{
-    menuControl2();
+    //menuControl2();
+    machine.run();
  }
 
   DevelopmentInfo(); // wird ausgeschaltet

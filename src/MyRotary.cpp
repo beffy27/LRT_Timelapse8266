@@ -39,6 +39,7 @@ void click(Button2& btn) {
   Lvl++;
   //MenuCounter=0;
   loadMenuCounter=true;
+  nextState=1;
 
 }
 

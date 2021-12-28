@@ -42,6 +42,7 @@ extern uint16_t callcounter;
 extern unsigned long  lastcalled;
 extern String SetupMenuItems[];
 extern int sizeofSetup;
+extern bool nextState;
 
 
 void initRotory();
