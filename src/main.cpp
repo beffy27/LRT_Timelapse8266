@@ -1,11 +1,13 @@
 #include "MyRotary.h"
 //#include <WiFiUdp.h>
 //#include "WiFiManager.h"  
+#include <Arduino.h>
 #include <ArduinoOTA.h>
 #include"MyOLED.h"
 #include <EEPROM.h>
 #include "eepromData.h"
 #include "main.h"
+#include "StateMachine.h"
 
 #define cfgStart 0
 #define CamOutput D3
