@@ -8,7 +8,7 @@
 
 
 
-
+uint16_t selectedMenu=0;
 uint16_t MenuCounter=0;
 uint8_t Lvl=0;
 uint8_t previousState=0;

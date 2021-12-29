@@ -7,6 +7,7 @@
 
 
 extern uint16_t MenuCounter;
+extern uint16_t selectedMenu;
 extern uint8_t Lvl;
 extern uint8_t previousState;
 extern bool startFlag;
