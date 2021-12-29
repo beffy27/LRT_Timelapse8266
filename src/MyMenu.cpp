@@ -7,11 +7,13 @@
 // Menus
 void MenuM()
 {
-  selectedMenu = 1;
+  selectable = true;
   switch (MenuCounter % 4)
   {
   case 0: // dM_TimelapseM
     dM_TimelapseM();
+    selectedMenu = 0;
+    //hier vielleicht noch die Statetransistion direkt setzen
     break;
   case 1:
     dM_TLBulbAstro();
@@ -21,40 +23,41 @@ void MenuM()
     break;
   case 3:
     dM_Setup();
+    selectedMenu = 3;
     break;
   }
 }
 
 void SetupMenu()
 {
-  selectedMenu = 2;
+  selectable = true;
   dM_SetupMenu();
 }
 
 void delayMenu()
 {
-  selectedMenu = 0;
+  selectable = false;
   dM_DelayTime();
   delay_s = MenuCounter;
 }
 
 void intervall()
 {
-  selectedMenu = 0;
+  selectable = false;
   dM_Intervall();
   interval = MenuCounter;
 }
 
 void nrOfShots()
 {
-  selectedMenu = 0;
+  selectable = false;
   dM_NoOfShots();
   shots = MenuCounter * 10;
 }
 
 void confirmMenu()
 {
-  selectedMenu = 0;
+  selectable = false;
   dM_Confirm();
 }
 
@@ -90,7 +93,7 @@ bool trans_Setup_Menu()
 
 bool transShortClick()
 {
-  if (selectedMenu)
+  if (selectable)
   {
     if (MenuCounter % MainMenuSize == selectedMenu && nextState)
     {
