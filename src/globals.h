@@ -7,7 +7,7 @@
 
 
 extern uint16_t MenuCounter;
-extern uint16_t selectedMenu;
+extern uint8_t selectedMenu;
 extern bool selectable;
 extern uint8_t Lvl;
 extern uint8_t previousState;
@@ -19,9 +19,10 @@ extern bool enableMenuCounter;
 extern uint8_t skip;
 extern bool loadMenuCounter;
 extern bool nextState;
-
+extern String MenuItems[];
 extern String SetupMenuItems[];
-extern int sizeofSetup;
+extern uint8_t sizeofSetup;
+extern uint8_t sizeofMenu;
 
 extern const int analogInPin;  // ESP8266 Analog Pin ADC0 = A0
 extern int sensorValue;  // value read from the pot
@@ -66,6 +67,7 @@ extern void dm_mR_oneDot();
 extern void releaseCamera();
 extern void dM_Abgebrochen();
 extern void dM_SetupMenu();
+extern void dM_MainMenu();
 
 typedef void (*Menu)(void);
 typedef void (*Funktionen)(void);

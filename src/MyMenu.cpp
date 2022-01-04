@@ -1,29 +1,37 @@
 #include "globals.h"
 #include "StateMachine.h"
-
+#include "MyMenu.h"
 #define MainMenuSize 4
 #define SetupMenuSize 8
+
+
+StateMachine machine = StateMachine();
+State *S_Menu = machine.addState(&MenuM);
+State *S_SetupMenu = machine.addState(&SetupMenu);
+State *S_Intervall = machine.addState(&intervall);
+State *S_nrOfShots = machine.addState(&nrOfShots);
+State *S_confirmMenu = machine.addState(&confirmMenu);
+//State *S_runningMenu = machine.addState(&runningMenu);
+State *S_delayMenu = machine.addState(&delayMenu);
 
 // Menus
 void MenuM()
 {
-  selectable = true;
-  switch (MenuCounter % 4)
+  dM_MainMenu();
+  switch (MenuCounter % sizeofMenu)
   {
-  case 0: // dM_TimelapseM
-    dM_TimelapseM();
-    selectedMenu = 0;
-    //hier vielleicht noch die Statetransistion direkt setzen
+  case 0:
+    selectedMenu = S_SetupMenu->index;
+    
     break;
   case 1:
-    dM_TLBulbAstro();
+    selectedMenu = S_Intervall->index;
     break;
   case 2:
-    dM_SingleExposure();
+    selectedMenu = S_delayMenu->index;
     break;
   case 3:
-    dM_Setup();
-    selectedMenu = 3;
+    selectedMenu = S_Intervall->index;
     break;
   }
 }
@@ -32,6 +40,10 @@ void SetupMenu()
 {
   selectable = true;
   dM_SetupMenu();
+  if((MenuCounter % sizeofSetup) == (sizeofSetup-1))
+  {
+  selectedMenu = S_Menu->index;
+  }
 }
 
 void delayMenu()
@@ -91,12 +103,32 @@ bool trans_Setup_Menu()
   }
 }
 
+
+
+
+
+void defineTransitions()
+{
+  S_Menu->addTransition(&transShortClick, S_SetupMenu);
+  S_SetupMenu->addTransition(&transShortClick, S_Menu);
+  // S_Menu->addTransition(&transShortClick, S_Intervall);
+  // S_Intervall->addTransition(&transShortClick, S_nrOfShots);
+  // S_nrOfShots->addTransition(&transShortClick, S_confirmMenu);
+}
+
+void runMenuStatemachine()
+{
+  machine.run();
+};
+
 bool transShortClick()
 {
-  if (selectable)
+  if (machine.currentState == S_Menu->index or machine.currentState == S_SetupMenu->index)
   {
-    if (MenuCounter % MainMenuSize == selectedMenu && nextState)
+    if (nextState)
     {
+      Serial.println("selectedMenu:" +  String(selectedMenu));
+      machine.transitionTo(selectedMenu);
       nextState = false;
       return true;
     }
@@ -112,26 +144,3 @@ bool transShortClick()
     return false;
   }
 }
-
-StateMachine machine = StateMachine();
-State *S_Menu = machine.addState(&MenuM);
-State *S_SetupMenu = machine.addState(&SetupMenu);
-State *S_Intervall = machine.addState(&intervall);
-State *S_nrOfShots = machine.addState(&nrOfShots);
-State *S_confirmMenu = machine.addState(&confirmMenu);
-//State *S_runningMenu = machine.addState(&runningMenu);
-State *S_delayMenu = machine.addState(&delayMenu);
-
-void defineTransitions()
-{
-  S_Menu->addTransition(&trans_Menu_Setup, S_SetupMenu);
-  S_SetupMenu->addTransition(&trans_Setup_Menu, S_Menu);
-  S_Menu->addTransition(&transShortClick, S_Intervall);
-  S_Intervall->addTransition(&transShortClick, S_nrOfShots);
-  S_nrOfShots->addTransition(&transShortClick, S_confirmMenu);
-}
-
-void runMenuStatemachine()
-{
-  machine.run();
-};

@@ -2,6 +2,7 @@
 #include "MyRotary.h"
 
 
+
 SSD1306Wire display(0x3c, D2, D1);
 int displayX = 128;
 int displayY = 64;
@@ -29,6 +30,13 @@ String intervalToFloat(uint16_t digits){
   }
 }
 
+void dM_MainMenu(){
+
+  display.setFont(ArialMT_Plain_16);
+  display.setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
+  display.drawString(centerX,centerY,MenuItems[((MenuCounter+sizeofMenu-1)%sizeofMenu)]);
+
+}
 
 void dM_TimelapseM(){
   display.setFont(ArialMT_Plain_16);

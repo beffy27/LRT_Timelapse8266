@@ -7,8 +7,9 @@
 
 
 
+
 bool selectable =false;
-uint16_t selectedMenu=0;
+uint8_t selectedMenu=0;
 uint16_t MenuCounter=0;
 uint8_t Lvl=0;
 uint8_t previousState=0;
@@ -31,9 +32,10 @@ bool loadMenuCounter=0;
 bool nextState=0;
 
 
-
+String MenuItems[] ={"Timelapse","Single Exposure", "Bulb", "Setup"};
 String SetupMenuItems[]={"Fotosize","ReleaseTime","AutofocusTime","DelayFlag","DelayTimeStd","Displayflipped","Save Settings","Back"};
-int sizeofSetup = (sizeof(SetupMenuItems)/sizeof(String));
+uint8_t sizeofSetup = (sizeof(SetupMenuItems)/sizeof(String));
+uint8_t sizeofMenu = (sizeof(MenuItems)/sizeof(String));
 
 typedef void (*Menu)(void);
 typedef void (*Funktionen)(void);

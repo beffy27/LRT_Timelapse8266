@@ -29,8 +29,9 @@
 
 void setup() {
   EEPROM.begin(4096);
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Online");
+  delay(100);
   initRotory();
 // WiFiManager wifiManager;  
 // wifiManager.resetSettings();          //mit diesem befehl kannst die gespeicherten werte löschen              
