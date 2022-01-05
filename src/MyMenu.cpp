@@ -58,16 +58,22 @@ uint8_t sizeofSetup = (sizeof(setupMenuItems)/sizeof(MenuArrays));
 
 
 StateTransition stateTable[] ={
-//inital        forwardFct        backFct                 NextState
-{S_Intervall ,  &transShortClick,   &transLongClick,      S_nrOfShots},
-{S_Intervall,   &transDoubleClick,  notPossible,          S_Menu},
-{S_nrOfShots,   &transShortClick,   &transLongClick,      S_confirmMenu},
-{S_nrOfShots,   &transDoubleClick,  notPossible,          S_Menu},
-{S_confirmMenu, &transShortClick,   notPossible,          S_runningMenu},
-{S_confirmMenu, &transDoubleClick,  notPossible,          S_Menu},
-{S_runningMenu, &transShortClick,   notPossible,          S_shootMenu},
-{S_runningMenu, &transDoubleClick,  notPossible,          S_Menu},
-{S_SetupMenu,   notPossible,        &transDoubleClick,    S_Menu}
+//inital          forwardFct        backFct                 NextState
+{S_Intervall ,    &transShortClick,   &transLongClick,      S_nrOfShots},
+{S_Intervall,     &transDoubleClick,  notPossible,          S_Menu},
+{S_nrOfShots,     &transShortClick,   &transLongClick,      S_confirmMenu},
+{S_nrOfShots,     &transDoubleClick,  notPossible,          S_Menu},
+{S_confirmMenu,   &transShortClick,   notPossible,          S_runningMenu},
+{S_confirmMenu,   &transDoubleClick,  notPossible,          S_Menu},
+{S_runningMenu,   &transShortClick,   notPossible,          S_shootMenu},
+{S_runningMenu,   &transDoubleClick,  notPossible,          S_Menu},
+{S_SetupMenu,     notPossible,        &transDoubleClick,    S_Menu},
+{S_ReleaseTime,   &transShortClick,   &transLongClick,      S_Menu},
+{S_AutoFocusTime, &transShortClick,   &transLongClick,      S_Menu},
+{S_StdDelayTime , &transShortClick,   &transLongClick,      S_Menu},
+{S_delayFlag,     &transShortClick,   &transLongClick,      S_Menu},
+{S_dispFlipped,   &transShortClick,   &transLongClick,      S_Menu},
+{S_SafeConfig,    &transShortClick,   &transLongClick,      S_Menu},
 };
 
 void defineTransitionsAuto(){
