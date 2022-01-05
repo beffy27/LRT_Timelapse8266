@@ -19,6 +19,8 @@ extern bool enableMenuCounter;
 extern uint8_t skip;
 extern bool loadMenuCounter;
 extern bool nextState;
+extern bool prevState;
+extern bool doubleClick;
 extern String MenuItems[];
 extern String SetupMenuItems[];
 extern uint8_t sizeofSetup;

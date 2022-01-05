@@ -62,6 +62,7 @@ void resetPosition(Button2 &btn)
     startFlag = false;
     Lvl = 255;
   }
+  prevState =1;
 }
 
 void rotateLeft(ESPRotary &r)
@@ -119,6 +120,7 @@ void showDirection(ESPRotary &r)
 void doubleclick(Button2 &btn)
 {
   skip++;
+  doubleClick=true;
 }
 
 void skipFunc(uint8_t LvlRaise)

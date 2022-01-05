@@ -30,6 +30,8 @@ bool loadMenuCounter=0;
 
 
 bool nextState=0;
+bool prevState=0;
+bool doubleClick=0;
 
 
 String MenuItems[] ={"Timelapse","Single Exposure", "Bulb", "Setup"};

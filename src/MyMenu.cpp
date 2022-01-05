@@ -3,6 +3,17 @@
 #include "MyMenu.h"
 #define MainMenuSize 4
 #define SetupMenuSize 8
+#define notPossible [](){return false;}
+
+
+struct StateTransition
+{
+  State* initialState;
+  bool (*forwardFuction)();
+  bool (*backwardFuction)();
+  State* endState;
+
+};
 
 
 StateMachine machine = StateMachine();
@@ -11,8 +22,25 @@ State *S_SetupMenu = machine.addState(&SetupMenu);
 State *S_Intervall = machine.addState(&intervall);
 State *S_nrOfShots = machine.addState(&nrOfShots);
 State *S_confirmMenu = machine.addState(&confirmMenu);
-//State *S_runningMenu = machine.addState(&runningMenu);
+State *S_runningMenu = machine.addState(&runMenu);
 State *S_delayMenu = machine.addState(&delayMenu);
+State *S_shootMenu = machine.addState(&shootMenu);
+
+StateTransition stateTable[] ={
+//inital        forwardFkt        backFkt           NextState
+{S_Intervall ,  &transShortClick, &transLongClick,  S_nrOfShots},
+{S_nrOfShots ,  &transShortClick, &transLongClick,  S_confirmMenu},
+{S_confirmMenu, &transShortClick, notPossible,      S_runningMenu},
+{S_runningMenu, &transShortClick, notPossible,      S_shootMenu},
+{S_runningMenu, &transDoubleClick,  notPossible,    S_Menu}
+};
+
+void defineTransitionsAuto(){
+  for(auto elem:stateTable){
+     elem.initialState->addTransition(elem.forwardFuction, elem.endState);
+     elem.endState->addTransition(elem.backwardFuction,elem.initialState);
+  }
+}
 
 // Menus
 void MenuM()
@@ -73,10 +101,15 @@ void confirmMenu()
   dM_Confirm();
 }
 
-// void runningMenu()
-// {
-//   selectedMenu = 0;
-// }
+void runMenu()
+{
+  selectedMenu = 0;
+}
+
+void shootMenu()
+{
+  selectedMenu = 0;
+}
 
 // Functions
 
@@ -130,7 +163,7 @@ bool transShortClick()
       Serial.println("selectedMenu:" +  String(selectedMenu));
       machine.transitionTo(selectedMenu);
       nextState = false;
-      return true;
+      return false;
     }
     return false;
   }
@@ -143,4 +176,22 @@ bool transShortClick()
     }
     return false;
   }
+}
+
+bool transLongClick(){
+  if(prevState)
+  {
+    prevState = false;
+    return true;
+  }
+  return false;
+}
+
+bool transDoubleClick(){
+  if(doubleClick)
+  {
+    doubleClick=false;
+    return true;
+  }
+  return false;
 }

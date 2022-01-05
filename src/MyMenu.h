@@ -53,7 +53,13 @@ void confirmMenu();
  * @brief the running menu chose of 3 different modi
  * 
  */
-extern void runningMenu();
+extern void runMenu();
+
+/**
+ * @brief shooting menu where you can place e.g ramp intervall
+ * 
+ */
+void shootMenu();
 
 
 //Transitions
@@ -65,6 +71,8 @@ bool trans_Setup_Menu();
 bool transShortClick();
 
 bool transLongClick();
+
+bool transDoubleClick();
 
 
 //Funktions
