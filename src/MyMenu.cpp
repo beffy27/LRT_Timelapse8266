@@ -1,6 +1,7 @@
 #include "globals.h"
 #include "StateMachine.h"
 #include "MyMenu.h"
+#include <map>
 #define MainMenuSize 4
 #define SetupMenuSize 8
 #define notPossible [](){return false;}
@@ -15,24 +16,58 @@ struct StateTransition
 
 };
 
+struct MenuArrays
+{
+  String outputString;
+  State* stateIndex;
+};
+
 
 StateMachine machine = StateMachine();
 State *S_Menu = machine.addState(&MenuM);
-State *S_SetupMenu = machine.addState(&SetupMenu);
 State *S_Intervall = machine.addState(&intervall);
 State *S_nrOfShots = machine.addState(&nrOfShots);
 State *S_confirmMenu = machine.addState(&confirmMenu);
 State *S_runningMenu = machine.addState(&runMenu);
 State *S_delayMenu = machine.addState(&delayMenu);
+State *S_SetupMenu = machine.addState(&SetupMenu);
+State *S_ReleaseTime = machine.addState(&releaseTime);
+State *S_AutoFocusTime = machine.addState(&autoFocusTime);
+State *S_StdDelayTime = machine.addState(&stdDelayTime);
+State *S_delayFlag = machine.addState(&delayFlag);
+State *S_dispFlipped = machine.addState(&displayFlipped);
+State *S_SafeConfig = machine.addState(&safeConfig);
 State *S_shootMenu = machine.addState(&shootMenu);
+State *S_Pause = machine.addState(&pause);
+State *S_ChangeNrofShots = machine.addState(&changeNrofShots);
+State *S_Flashlight = machine.addState(&flashlight);
+State *S_RampIntervall = machine.addState(&rampIntervall);
+
+
+
+MenuArrays setupMenuItems[] {
+  {"ReleaseTime",S_ReleaseTime},
+  {"AutofocusTime",S_AutoFocusTime},
+  {"DelayFlag",S_delayFlag},
+  {"DelayTimeStd",S_StdDelayTime},
+  {"Displayflipped",S_dispFlipped},
+  {"Save Settings",S_SafeConfig}
+  };
+  
+uint8_t sizeofSetup = (sizeof(setupMenuItems)/sizeof(MenuArrays));
+
 
 StateTransition stateTable[] ={
-//inital        forwardFkt        backFkt           NextState
-{S_Intervall ,  &transShortClick, &transLongClick,  S_nrOfShots},
-{S_nrOfShots ,  &transShortClick, &transLongClick,  S_confirmMenu},
-{S_confirmMenu, &transShortClick, notPossible,      S_runningMenu},
-{S_runningMenu, &transShortClick, notPossible,      S_shootMenu},
-{S_runningMenu, &transDoubleClick,  notPossible,    S_Menu}
+//inital        forwardFct        backFct                 NextState
+{S_Intervall ,  &transShortClick,   &transLongClick,      S_nrOfShots},
+{S_Intervall,   &transDoubleClick,  notPossible,          S_Menu},
+{S_nrOfShots,   &transShortClick,   &transLongClick,      S_confirmMenu},
+{S_nrOfShots,   &transDoubleClick,  notPossible,          S_Menu},
+{S_confirmMenu, &transShortClick,   notPossible,          S_runningMenu},
+{S_confirmMenu, &transDoubleClick,  notPossible,          S_Menu},
+{S_runningMenu, &transShortClick,   notPossible,          S_shootMenu},
+{S_runningMenu, &transDoubleClick,  notPossible,          S_Menu},
+{S_SetupMenu,   notPossible,        &transDoubleClick,    S_Menu}
 };
 
 void defineTransitionsAuto(){
@@ -50,7 +85,6 @@ void MenuM()
   {
   case 0:
     selectedMenu = S_SetupMenu->index;
-    
     break;
   case 1:
     selectedMenu = S_Intervall->index;
@@ -66,50 +100,115 @@ void MenuM()
 
 void SetupMenu()
 {
-  selectable = true;
-  dM_SetupMenu();
-  if((MenuCounter % sizeofSetup) == (sizeofSetup-1))
-  {
-  selectedMenu = S_Menu->index;
-  }
+
+  dM_SetupMenu_neu(
+    setupMenuItems[((MenuCounter + sizeofSetup - 1) % sizeofSetup)].outputString,
+    setupMenuItems[(MenuCounter % sizeofSetup)].outputString,
+    setupMenuItems[((MenuCounter + sizeofSetup + 1) % sizeofSetup)].outputString
+  );
+  selectedMenu = setupMenuItems[MenuCounter % sizeofSetup].stateIndex->index;
 }
+
+
 
 void delayMenu()
 {
-  selectable = false;
+
   dM_DelayTime();
   delay_s = MenuCounter;
 }
 
 void intervall()
 {
-  selectable = false;
+
   dM_Intervall();
   interval = MenuCounter;
 }
 
 void nrOfShots()
 {
-  selectable = false;
+
   dM_NoOfShots();
   shots = MenuCounter * 10;
 }
 
 void confirmMenu()
 {
-  selectable = false;
+
   dM_Confirm();
 }
 
 void runMenu()
 {
-  selectedMenu = 0;
+  cameraTrigger();
+  switch(MenuCounter%3){
+    case 0: //mR_fullInfo:
+    dm_mR_fullInfo();
+    break;
+    case 1:
+    dm_mR_minInfo();
+    break;
+    case 2:
+    dm_mR_oneDot();
+    break;
+  }
 }
 
 void shootMenu()
 {
-  selectedMenu = 0;
+universalFrame("Shootmenu","Shoot","");
 }
+
+void releaseTime()
+{
+  universalFrame("Releasetime",String(cfg.releaseTime),"ms");
+}
+
+void autoFocusTime()
+{
+  universalFrame("Autofocustime",String(cfg.autofocusTime),"ms");
+}
+
+void stdDelayTime()
+{
+  universalFrame("StdDelay",String(cfg.delayTimeStandard),"");
+}
+
+void safeConfig()
+{
+  universalFrame("SafeConfig","Yes","");
+}
+
+void pause()
+{
+  universalFrame("Pause","Yes","");
+}
+
+void changeNrofShots()
+{
+}
+
+void flashlight()
+{
+}
+
+void rampIntervall()
+{
+}
+
+void delayFlag()
+{
+universalFrame("DelayFlag",String(cfg.delayFlag),"");
+}
+void displayFlipped()
+{
+ universalFrame("Flip display",String(cfg.displayflipped),""); 
+}
+
+
+
+
+
 
 // Functions
 

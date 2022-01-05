@@ -61,6 +61,18 @@ extern void runMenu();
  */
 void shootMenu();
 
+void releaseTime();
+void autoFocusTime();
+void stdDelayTime();
+void safeConfig();
+void pause();
+void changeNrofShots();
+void flashlight();
+void rampIntervall();
+
+void delayFlag();
+void displayFlipped();
+
 
 //Transitions
 

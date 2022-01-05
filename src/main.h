@@ -4,7 +4,7 @@
 extern void loadConfig();
 
 extern void saveConfig();
-extern void defineTransitions();
+extern void defineTransitionsAuto();
 extern void runMenuStatemachine();
 extern uint16_t MenuCounter;
 extern bool nextState;

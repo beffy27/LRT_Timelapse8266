@@ -54,7 +54,7 @@ void setup() {
   //eepromTest();
   loadConfig();
   shootFlag =false;
-  defineTransitions();
+  defineTransitionsAuto();
 
 }
 
@@ -269,7 +269,7 @@ void cameraTrigger(){
   // do this always (multiple times per interval)
  // possiblyRampInterval();
 }
-
+/*
 void  runningMenu(){
   cameraTrigger();
   switch(MenuCounter%3){
@@ -284,6 +284,7 @@ void  runningMenu(){
     break;
   }
 }
+*/
 
 
 
@@ -312,7 +313,7 @@ enableMenuCounter =true;
  // menus[MenuCounter%4][Lvl%MenuLen]();
  if (startFlag){
 
-  runningMenu();
+  //runningMenu();
   
  }else{
     //menuControl2();

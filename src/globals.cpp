@@ -35,9 +35,11 @@ bool doubleClick=0;
 
 
 String MenuItems[] ={"Timelapse","Single Exposure", "Bulb", "Setup"};
-String SetupMenuItems[]={"Fotosize","ReleaseTime","AutofocusTime","DelayFlag","DelayTimeStd","Displayflipped","Save Settings","Back"};
-uint8_t sizeofSetup = (sizeof(SetupMenuItems)/sizeof(String));
+String SetupMenuItems[]={"ReleaseTime","AutofocusTime","DelayFlag","DelayTimeStd","Displayflipped","Save Settings","Back"};
+//uint8_t sizeofSetup = (sizeof(SetupMenuItems)/sizeof(String));
 uint8_t sizeofMenu = (sizeof(MenuItems)/sizeof(String));
+
+
 
 typedef void (*Menu)(void);
 typedef void (*Funktionen)(void);

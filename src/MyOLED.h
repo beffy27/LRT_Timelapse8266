@@ -24,15 +24,17 @@ void dM_DelayTime();
 void dM_Intervall();
 void dM_NoOfShots();
 void dM_Exposure();
+void universalFrame(String headline,String displayed_var, String unit);
 void dM_DelayCountDown();
 void dm_Start();
 void dM_Confirm();
-void  dm_mR_fullInfo();
-void  dm_mR_minInfo();
-void  dm_mR_oneDot();
+void dm_mR_fullInfo();
+void dm_mR_minInfo();
+void dm_mR_oneDot();
 String SeperateTimehms( unsigned long seconds);
 void releaseCamera();
 void dM_Abgebrochen();
 void dM_SetupMenu();
+void dM_SetupMenu_neu(String before, String main, String after);
 
 #endif 

@@ -3,6 +3,7 @@
 #include "Arduino.h"
 #include "eepromData.h"
 #include <string.h>
+#include <map>
 
 
 
@@ -21,10 +22,16 @@ extern bool loadMenuCounter;
 extern bool nextState;
 extern bool prevState;
 extern bool doubleClick;
+
 extern String MenuItems[];
 extern String SetupMenuItems[];
 extern uint8_t sizeofSetup;
 extern uint8_t sizeofMenu;
+
+//extern std::map<String, State*> setupMenuItems;
+
+
+
 
 extern const int analogInPin;  // ESP8266 Analog Pin ADC0 = A0
 extern int sensorValue;  // value read from the pot
@@ -70,7 +77,9 @@ extern void releaseCamera();
 extern void dM_Abgebrochen();
 extern void dM_SetupMenu();
 extern void dM_MainMenu();
-
+extern void cameraTrigger();
+extern void dM_SetupMenu_neu(String before, String main, String after);
+extern void universalFrame(String headline,String displayed_var, String unit);
 typedef void (*Menu)(void);
 typedef void (*Funktionen)(void);
 extern Menu menus[][5];
