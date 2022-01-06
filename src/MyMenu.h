@@ -86,6 +86,13 @@ bool transLongClick();
 
 bool transDoubleClick();
 
+bool transMenuAuswahl();
+
+bool transSetupMenu();
+
+bool transMenuIntervall();
+
+bool transMenuSetup();
 
 //Funktions
 void defineTransitions();

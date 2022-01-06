@@ -38,11 +38,13 @@ void click(Button2 &btn)
   // MenuCounter=0;
   loadMenuCounter = true;
   nextState = 1;
+  
 }
 
 // long click
 void resetPosition(Button2 &btn)
 {
+   Serial.println("LOOOOOOOOOOOOOOOOONGClick!");
   // r.resetPosition();
   // Serial.println("Reset!");
   MenuCounter = 0;
@@ -119,6 +121,7 @@ void showDirection(ESPRotary &r)
 
 void doubleclick(Button2 &btn)
 {
+   Serial.println("2xClick!");
   skip++;
   doubleClick=true;
 }

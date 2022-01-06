@@ -57,6 +57,14 @@ MenuArrays setupMenuItems[] {
 uint8_t sizeofSetup = (sizeof(setupMenuItems)/sizeof(MenuArrays));
 
 
+MenuArrays mainMenuItems[] {
+  {"Intervall",S_Intervall},
+  {"Setup",S_SetupMenu}
+  };
+  
+uint8_t sizeofMainMenu = (sizeof(mainMenuItems)/sizeof(MenuArrays));
+
+
 StateTransition stateTable[] ={
 //inital          forwardFct        backFct                 NextState
 {S_Intervall ,    &transShortClick,   &transLongClick,      S_nrOfShots},
@@ -67,13 +75,16 @@ StateTransition stateTable[] ={
 {S_confirmMenu,   &transDoubleClick,  notPossible,          S_Menu},
 {S_runningMenu,   &transShortClick,   notPossible,          S_shootMenu},
 {S_runningMenu,   &transDoubleClick,  notPossible,          S_Menu},
-{S_SetupMenu,     notPossible,        &transDoubleClick,    S_Menu},
-{S_ReleaseTime,   &transShortClick,   &transLongClick,      S_Menu},
-{S_AutoFocusTime, &transShortClick,   &transLongClick,      S_Menu},
-{S_StdDelayTime , &transShortClick,   &transLongClick,      S_Menu},
-{S_delayFlag,     &transShortClick,   &transLongClick,      S_Menu},
-{S_dispFlipped,   &transShortClick,   &transLongClick,      S_Menu},
-{S_SafeConfig,    &transShortClick,   &transLongClick,      S_Menu},
+{S_SetupMenu,     notPossible,   &transDoubleClick,    S_Menu},
+{S_ReleaseTime,   &transShortClick,   notPossible,          S_Menu},
+{S_AutoFocusTime, &transShortClick,   notPossible,          S_Menu},
+{S_StdDelayTime , &transShortClick,   notPossible,          S_Menu},
+{S_delayFlag,     &transShortClick,   notPossible,          S_Menu},
+{S_dispFlipped,   &transShortClick,   notPossible,          S_Menu},
+{S_SafeConfig,    &transShortClick,   notPossible,          S_Menu},
+{S_Menu,          &transMenuIntervall,   notPossible,          S_Intervall},
+{S_Menu,          &transMenuSetup,   notPossible,          S_SetupMenu},
+//{S_SetupMenu,     &transSetupMenu,   notPossible,          S_SetupMenu},
 };
 
 void defineTransitionsAuto(){
@@ -83,36 +94,26 @@ void defineTransitionsAuto(){
   }
 }
 
+
 // Menus
 void MenuM()
 {
-  dM_MainMenu();
-  switch (MenuCounter % sizeofMenu)
-  {
-  case 0:
-    selectedMenu = S_SetupMenu->index;
-    break;
-  case 1:
-    selectedMenu = S_Intervall->index;
-    break;
-  case 2:
-    selectedMenu = S_delayMenu->index;
-    break;
-  case 3:
-    selectedMenu = S_Intervall->index;
-    break;
-  }
+  Serial.println("Menu"+String(machine.currentState));
+  
+  universalFrame("",mainMenuItems[(MenuCounter % sizeofMainMenu)].outputString,"");
+
 }
 
 void SetupMenu()
 {
-
+  
   dM_SetupMenu_neu(
     setupMenuItems[((MenuCounter + sizeofSetup - 1) % sizeofSetup)].outputString,
     setupMenuItems[(MenuCounter % sizeofSetup)].outputString,
     setupMenuItems[((MenuCounter + sizeofSetup + 1) % sizeofSetup)].outputString
   );
-  selectedMenu = setupMenuItems[MenuCounter % sizeofSetup].stateIndex->index;
+  
+  //selectedMenu = setupMenuItems[MenuCounter % sizeofSetup].stateIndex->index;
 }
 
 
@@ -126,7 +127,7 @@ void delayMenu()
 
 void intervall()
 {
-
+  Serial.println("intervall");
   dM_Intervall();
   interval = MenuCounter;
 }
@@ -146,6 +147,7 @@ void confirmMenu()
 
 void runMenu()
 {
+  Serial.println("runMenu");
   cameraTrigger();
   switch(MenuCounter%3){
     case 0: //mR_fullInfo:
@@ -167,6 +169,7 @@ universalFrame("Shootmenu","Shoot","");
 
 void releaseTime()
 {
+  Serial.println("releaseTime");
   universalFrame("Releasetime",String(cfg.releaseTime),"ms");
 }
 
@@ -218,84 +221,123 @@ void displayFlipped()
 
 // Functions
 
-bool trans_Menu_Setup()
-{
-  if (MenuCounter % MainMenuSize == 3 && nextState)
-  {
-    nextState = false;
-    return true;
-  }
-  return false;
-}
-
-bool trans_Setup_Menu()
-{
-  if (MenuCounter % sizeofSetup == 7 && nextState)
-  {
-    nextState = false;
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-
-
-
-
-void defineTransitions()
-{
-  S_Menu->addTransition(&transShortClick, S_SetupMenu);
-  S_SetupMenu->addTransition(&transShortClick, S_Menu);
-  // S_Menu->addTransition(&transShortClick, S_Intervall);
-  // S_Intervall->addTransition(&transShortClick, S_nrOfShots);
-  // S_nrOfShots->addTransition(&transShortClick, S_confirmMenu);
-}
 
 void runMenuStatemachine()
 {
   machine.run();
+
 };
 
 bool transShortClick()
 {
-  if (machine.currentState == S_Menu->index or machine.currentState == S_SetupMenu->index)
+    Serial.println("next state Short Click");
+    Serial.println(machine.currentState);
+  /*if (machine.currentState == S_Menu->index)
   {
     if (nextState)
     {
       Serial.println("selectedMenu:" +  String(selectedMenu));
-      machine.transitionTo(selectedMenu);
+      //machine.transitionTo(selectedMenu);
+      S_Menu->addTransition([](){
+            S_Menu->setTransition(0,selectedMenu);
+            return true;
+             },S_Menu);
       nextState = false;
-      return false;
+      return true;
     }
     return false;
-  }
-  else
-  {
+  }else if(machine.currentState == S_SetupMenu->index){
     if (nextState)
     {
+      Serial.println("selectedMenu:" +  String(selectedMenu));
+      //machine.transitionTo(selectedMenu);
+      S_SetupMenu->addTransition([](){
+            S_SetupMenu->setTransition(0,selectedMenu);
+            return true;
+             },S_SetupMenu);
       nextState = false;
       return true;
     }
     return false;
   }
+  else
+  {*/
+    if (nextState)
+    {
+      nextState = false;
+      Serial.println("true Short Click");
+      return true;
+    }
+    return false;
+  //}
 }
 
 bool transLongClick(){
+  Serial.println("next state LongClick");
   if(prevState)
   {
     prevState = false;
-    return true;
+    Serial.println("LongClick true");
+    machine.transitionTo(S_Intervall->index);
+    return false;
   }
   return false;
 }
 
 bool transDoubleClick(){
+  Serial.println("next state DoubleClick");
   if(doubleClick)
   {
     doubleClick=false;
+    Serial.println("DoubleClick true");
+    return true;
+  }
+  return false;
+}
+
+bool transMenuAuswahl(){
+  if (nextState && mainMenuItems[(MenuCounter % sizeofMainMenu)].outputString == mainMenuItems[0].outputString)
+  {
+    nextState = false;
+    return true;
+  }
+  else if (nextState && mainMenuItems[(MenuCounter % sizeofMainMenu)].outputString == mainMenuItems[1].outputString)
+  {
+    nextState = false;
+    return true;
+  }
+  return false;
+}
+
+// bool transSetupMenu(){
+//   Serial.println("transSetupMenu "+String(machine.currentState));
+//   if(nextState){
+//     nextState = false;
+//     S_SetupMenu->addTransition([](){
+//     Serial.print("Transitioning to Setupstate ");
+//     Serial.println(setupMenuItems[(MenuCounter % sizeofSetup)].outputString);
+//     Serial.println("cS:"+String(machine.currentState));
+//     S_SetupMenu->setTransition(S_SetupMenu->index,setupMenuItems[(MenuCounter % sizeofSetup)].stateIndex->index);
+   
+//     return true;
+//   },S_SetupMenu);
+//    Serial.println("cS_after:"+String(machine.currentState));
+//   return false;
+//   }
+//   return false;
+// }
+
+bool transMenuIntervall(){
+  if(nextState && mainMenuItems[(MenuCounter % sizeofMainMenu)].outputString == mainMenuItems[0].outputString){
+    nextState = false;
+    return true;
+  }
+  return false;
+}
+
+bool transMenuSetup(){
+  if(nextState && mainMenuItems[(MenuCounter % sizeofMainMenu)].outputString == mainMenuItems[1].outputString){
+    nextState = false;
     return true;
   }
   return false;

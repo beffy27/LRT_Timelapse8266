@@ -2,7 +2,7 @@
 //#include <WiFiUdp.h>
 //#include "WiFiManager.h"  
 #include <Arduino.h>
-#include <ArduinoOTA.h>
+//#include <ArduinoOTA.h>
 #include"MyOLED.h"
 #include <EEPROM.h>
 #include "main.h"
@@ -37,10 +37,10 @@ void setup() {
 // wifiManager.resetSettings();          //mit diesem befehl kannst die gespeicherten werte löschen              
 //wifiManager.autoConnect("UHR");
   Serial.println("verbunden!");
-  ArduinoOTA.setHostname("TLaps_OTA");
-  ArduinoOTA.setPassword("Beffy");
-  ArduinoOTA.begin();
-  Serial.println(WiFi.localIP());
+  //ArduinoOTA.setHostname("TLaps_OTA");
+  //ArduinoOTA.setPassword("Beffy");
+  //ArduinoOTA.begin();
+  //Serial.println(WiFi.localIP());
     display.init();
 
   //display.flipScreenVertically();
@@ -305,7 +305,7 @@ void releaseCamera(){
 
 void loop() {
 enableMenuCounter =true;
-  ArduinoOTA.handle();
+  //ArduinoOTA.handle();
   // clear the display
   display.clear();
   // draw the current demo method
@@ -327,6 +327,7 @@ enableMenuCounter =true;
   display.display();
   r.loop();
   b.loop();
+  
   releaseCamera();
 }
 
