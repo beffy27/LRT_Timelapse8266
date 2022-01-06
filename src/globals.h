@@ -35,7 +35,8 @@ extern uint8_t sizeofMenu;
 
 extern const int analogInPin;  // ESP8266 Analog Pin ADC0 = A0
 extern int sensorValue;  // value read from the pot
-extern bool shootFlag;
+//extern bool shootFlag;
+extern bool finishFlag;
 extern long shoottimepoint;
 extern int choosed_Menu;
 //extern enum MenuStructure;

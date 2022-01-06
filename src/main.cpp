@@ -244,7 +244,7 @@ void menuControl2(){
 */
 
 void cameraTrigger(){
-  
+  Serial.println("CameraTrigger");
   // do this every interval only
   if ( ( millis() - previousMillis ) >=   (interval*100) ) {
 
@@ -258,10 +258,13 @@ void cameraTrigger(){
       Lvl=0;
       startFlag = false;
       shotCount=0;
+      finishFlag=true;
     } else { // is running
       //runningTime += (millis() - previousMillis );
       previousMillis = millis();
+      Serial.println("SetshootFlag");
       shootFlag=true;
+      
       shotCount++;
     }
   }
@@ -289,13 +292,17 @@ void  runningMenu(){
 
 
 void releaseCamera(){
+  
   if(shootFlag){
     shoottimepoint=millis();
     digitalWrite(CamOutput,LOW);
+    Serial.println("CAMERA LOW");
     shootFlag = false;
   }else{
     if(millis()-shoottimepoint >= releasetime){
+      
       digitalWrite(CamOutput,HIGH);
+      Serial.println("CAMERA HIGH");
     }
   }
  // digitalWrite(CamOutput,LOW);

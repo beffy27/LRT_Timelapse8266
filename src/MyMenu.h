@@ -93,6 +93,13 @@ bool transSetupMenu();
 bool transMenuIntervall();
 
 bool transMenuSetup();
+bool transSetupReleaseTime();
+bool transAutoFocusTime();
+bool transStdDelayTime();
+bool transdelayFlag ();
+bool transdispFlipped();
+bool transSafeConfig();
+bool onFinish();
 
 //Funktions
 void defineTransitions();

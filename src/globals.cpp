@@ -50,7 +50,8 @@ int sensorValue = 0;  // value read from the pot
 
 
 
-bool shootFlag = false;
+//bool shootFlag = false;
+bool finishFlag = false;
 long shoottimepoint =0;
 int choosed_Menu = 0;
 enum choosenMenu {e_TimelapseM=0,e_TLBulbAstro=20,e_SingleExposure=40,e_Setup=60};
@@ -86,7 +87,7 @@ uint8_t mem_delay_m=0;
 uint8_t mem_delay_s=0;
 float mem_interval=1;
 uint16_t mem_shots=0;
-uint16_t releasetime =200;
+uint16_t releasetime =100;
 
 configData_t cfg;
 /////////////////////////////////////////////////////////////////
